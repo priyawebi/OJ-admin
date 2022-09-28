@@ -1,0 +1,42 @@
+.fixed_header_div {
+    padding: 10px;
+}
+
+.fixed_header {
+    width: 800px;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.move_table_tr {
+    background: rgb(211, 208, 208);
+    cursor: default;
+}
+
+.firstElement {
+    display: flex;
+    flex-direction: row;
+}
+
+.helperContainerClass {
+    width: auto;
+    border: 1px solid #efefef;
+    box-shadow: 0 5px 5px -5px rgba(0, 0, 0, 0.2);
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 3px;
+}
+
+.helperContainerClass:active {
+    cursor: grabbing;
+}
+
+.helperContainerClass>td {
+    text-align: center;
+    width: 200px;
+}
+
+.handle {
+    margin-right: 10px;
+    padding: 0 5px;
+    cursor: grab;
+}

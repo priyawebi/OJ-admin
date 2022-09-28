@@ -1,0 +1,2 @@
+import gemFamilyVariety from "components/gemFamilyVariety/gemFamilyVariety"
+export default gemFamilyVariety

@@ -1,0 +1,2 @@
+import discountCodeDetails from "components/discountcode/discountCodeDetails";
+export default discountCodeDetails
