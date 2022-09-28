@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import loginSlice from '../../../src/redux/reducer/Login/index'
+import  jwelleryTypeSlice from '../../../src/redux/reducer/JwelleryType/index'
 // import loaderSlice from '../reducer/Loader/index';
 // import sideBarSlice from '../reducer/Sidebar/index';
 // import packageSlice from '../reducer/Package/index';
@@ -20,6 +21,7 @@ import loginSlice from '../../../src/redux/reducer/Login/index'
 
 export const rootReducer = combineReducers({
   login: loginSlice,
+  jwelleryType:jwelleryTypeSlice
 //   loader: loaderSlice,
 //   section: sectionSlice,
 //   word: wordTestSlice,

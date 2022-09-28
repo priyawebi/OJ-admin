@@ -15,14 +15,14 @@ import axios from "axios";
 import Router from "next/router";
 const imageMimeType = /image\/(png|jpg|jpeg)/i;
 
-const options1 = [
-  { label: "Ring ", value: "Ring" },
-  { label: "Earring ", value: "Earring" },
-  { label: "Neclace ", value: "Neclace" },
-  { label: "Bracelat ", value: "Bracelat" },
-  { label: "Brooch ", value: "Brooch" }
- ,
-];
+     const options1 = [
+        { label: "Ring ", value: "Ring" },
+        { label: "Earring ", value: "Earring" },
+        { label: "Neclace ", value: "Neclace" },
+        { label: "Bracelat ", value: "Bracelat" },
+        { label: "Brooch ", value: "Brooch" }
+       ,
+      ];
 
 const options2 = [
   { label: "white", value: "white" },
@@ -142,7 +142,6 @@ function GemDetails() {
   }, [files]);
 
   const changeHandlerds = (evnt) => {
-    console.log(evnt.target.files, "-----------------files");
     const file = evnt.target.files[0];
     if (!file.type.match(imageMimeType)) {
       alert("Image mime type is not valid");
@@ -152,11 +151,9 @@ function GemDetails() {
     const targetFiles = evnt.target.files;
     const targetFilesObject = [...targetFiles];
     targetFilesObject.map((file) => {
-      console.log(file, "--------------------------filed");
       return selectedFIles.push(file);
     });
     setFiled(selectedFIles);
-    console.log(filed, "-------------filed");
   };
   // useEffect(() => {
   //   let fileReader,
@@ -246,7 +243,6 @@ function GemDetails() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setCreator(res.data));
-   // console.log("---creator---", creator);
   };
 
   useEffect(() => {
@@ -270,10 +266,12 @@ function GemDetails() {
       .get(`${url}api/admin/jewellerytype/all`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => setJewellerytype(res.data)
-      
+      .then((res) => {setJewellerytype(res.data)
+        const onlyValues = res?.data?.map((d) => d.name);
+       }
       );
   };
+
 
   useEffect(() => {
     getGemColor();
@@ -286,7 +284,6 @@ function GemDetails() {
       })
       .then((res) => {setColor(res.data);
         const color = res?.data?.map(d => d);
-        //console.log(color,"---------color-------")
       }
       );
   };
@@ -345,10 +342,7 @@ function GemDetails() {
   };
 
   const handleRemoveImage = (index) => {
-    console.log(index, "------------index");
     var spliced = images.splice(index - 1, index);
-    console.log(spliced, "============================spliced");
-    console.log(images, "-------------------------------images");
     // setImages(spliced);
   };
 
@@ -360,10 +354,7 @@ function GemDetails() {
     let selectedjewellerytypeValue = selectedjewellerytype.map((dt) => {
       return dt.value;
     });
-    console.log(
-      selectedjewellerytypeValue,
-      "-------------------selectedjewellerytype"
-    );
+  
 
     let bgColors = {
       color_1: firstColor,
@@ -501,7 +492,6 @@ function GemDetails() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((result) => {
-        console.log(result, "----------------------result");
         showToaster("success", "GemsAdd Added Successfully");
       })
       .catch((err) => {
@@ -602,7 +592,6 @@ function GemDetails() {
                               </div>
                               <div className="row mt-3">
                                 {images.map((url, index) => {
-                                  console.log(url,"--------",index)
                                   return (
                                     <div className="col-sm-4 image-sec">
                                       <div className="bg-pink">
