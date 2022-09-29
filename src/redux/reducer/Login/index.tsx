@@ -4,8 +4,6 @@ const initialState: loginState = {
   loginData: [],
 };
 
-
-
 const loginSlice = createSlice({
   name: 'login',
   initialState,

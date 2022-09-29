@@ -9,7 +9,6 @@ import Typography from "@material-ui/core/Typography";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 
 function GemType() {
-  const [loadingText, setLoadingText] = useState("");
   const [gemName, setGemName] = useState("");
   const [checked, setChecked] = useState([]);
   const [ugemNames, stUGemNames] = useState("");
@@ -112,7 +111,6 @@ function GemType() {
     }
     Router.push("/all-gem-type");
   };
-
   return (
     <>
       <Container activeBar={"dyj"} />

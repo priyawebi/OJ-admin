@@ -4,32 +4,30 @@ import { Formik, Field, Form, FieldArray } from "formik";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
-import Images from "components/_common/Images";
 import Table from "react-bootstrap/Table";
 import { MultiSelect } from "react-multi-select-component";
 import { faFile, faVideo, faXmark } from "@fortawesome/free-solid-svg-icons";
 import Container from "components/_common/Container";
 import showToaster from 'components/_common/Toaster/Toaster';
 import { url } from "components/ApiUrl/ApiUrl";
+import { getJwelleryTypes } from "redux/action/JwelleryType";
+import { getColorTypes } from "redux/action/Color";
+import { getCutTypes } from "redux/action/Cut";
+import { getCreatorTypes } from "redux/action/Creator";
 import axios from "axios";
 import Router from "next/router";
+import { AnyAction } from 'redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'redux/store';
+
+
 const imageMimeType = /image\/(png|jpg|jpeg)/i;
 
-const options1 = [
-  { label: "Ring ", value: "Ring" },
-  { label: "Earring ", value: "Earring" },
-  { label: "Neclace ", value: "Neclace" },
-  { label: "Bracelat ", value: "Bracelat" },
-  { label: "Brooch ", value: "Brooch" }
- ,
-];
 
-const options2 = [
-  { label: "white", value: "white" },
-  { label: "Black", value: "Black" },
-  { label: "aquamarine", value: "aquamarine" },
-  { label: "Blue", value: "Blue" },
-];
+  //access Token for validation
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
+
 
 const options3 = [
   { label: "Australia", value: "Australia" },
@@ -38,11 +36,13 @@ const options3 = [
   { label: "UK", value: "UK" },
 ];
 function GemDetails() {
+  const token =
+  typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
   const router = useRouter();
   const [selectedcolor, setSelectedColor] = useState([]);
   const [selectedjewellerytype, setSelectedJewelleryType] = useState([]);
   const [logoFile, setLogoFile] = useState<File | null>(null);
-
+  const dispatch = useDispatch();
   const [firstColor, setFirstColor] = useState("");
   const [secondColor, setSecondColor] = useState("");
   const [mount, setMount] = useState(false);
@@ -81,6 +81,70 @@ function GemDetails() {
   const [filecf, setFileCF] = useState(null);
 
   const [fileDataURLCF, setFileDataURLdCF] = useState(null);
+
+  const JwellleryTypeData = useSelector(
+    (state: RootState) => state?.jwelleryType?.jwelleryTypeData
+  );
+
+  const ColorTypeData = useSelector(
+    (state: RootState) => state?.color?.colorTypeData
+  );
+
+  const CreatorTypeData = useSelector(
+    (state: RootState) => state?.creator?.creatorTypeData
+  );
+
+  const CutTypeData = useSelector(
+    (state: RootState) => state?.cut?.cutTypeData
+  );
+
+useEffect(()=>{
+if(CutTypeData!=undefined){
+  const cutArray = CutTypeData.filter((res)=>res.cutName==="Proportions")
+}},[CutTypeData])
+
+
+  useEffect(() => {
+    //dispatch(loader(true));
+    dispatch(getJwelleryTypes(token) as unknown as AnyAction);
+  }, [token,dispatch]);
+
+  useEffect(() => {
+    //dispatch(loader(true));
+    dispatch(getColorTypes(token) as unknown as AnyAction);
+  }, [token,dispatch]);
+
+  useEffect(() => {
+    //dispatch(loader(true));
+    dispatch(getCutTypes(token) as unknown as AnyAction);
+  }, [token,dispatch]);
+
+  useEffect(() => {
+    //dispatch(loader(true));
+    dispatch(getCreatorTypes(token) as unknown as AnyAction);
+  }, [token,dispatch]);
+
+  const options1 = JwellleryTypeData?.map(
+    (dt: { name: string; }) => ({
+      value: dt?.name,
+      label: (
+        <div>
+          {dt?.name}{" "}
+        </div>
+      ),
+    })
+  );
+
+  const options2 = ColorTypeData?.map(
+    (dt: { name: string; }) => ({
+      value: dt?.name,
+      label: (
+        <div>
+          {dt?.name}{" "}
+        </div>
+      ),
+    })
+  );
 
   const changeHandler = (e) => {
     const file = e.target.files[0];
@@ -142,7 +206,6 @@ function GemDetails() {
   }, [files]);
 
   const changeHandlerds = (evnt) => {
-    console.log(evnt.target.files, "-----------------files");
     const file = evnt.target.files[0];
     if (!file.type.match(imageMimeType)) {
       alert("Image mime type is not valid");
@@ -152,11 +215,9 @@ function GemDetails() {
     const targetFiles = evnt.target.files;
     const targetFilesObject = [...targetFiles];
     targetFilesObject.map((file) => {
-      console.log(file, "--------------------------filed");
       return selectedFIles.push(file);
     });
     setFiled(selectedFIles);
-    console.log(filed, "-------------filed");
   };
   // useEffect(() => {
   //   let fileReader,
@@ -179,8 +240,6 @@ function GemDetails() {
   //     }
   //   };
   // }, [filed]); //change this variable
-
-
 
   const changeHandlerdCF = (e) => {
     const file = e.target.files[0];
@@ -246,7 +305,6 @@ function GemDetails() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setCreator(res.data));
-   // console.log("---creator---", creator);
   };
 
   useEffect(() => {
@@ -261,38 +319,22 @@ function GemDetails() {
       .then((res) => setShape(res.data));
   };
 
-  useEffect(() => {
-    getJwellertTYpe();
-  }, []);
 
-  const getJwellertTYpe = () => {
-    axios
-      .get(`${url}api/admin/jewellerytype/all`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => setJewellerytype(res.data)
-      
-      );
-  };
+  // useEffect(() => {
+  //   getGemColor();
+  // }, []);
 
-  useEffect(() => {
-    getGemColor();
-  }, []);
-
-  const getGemColor = () => {
-    axios
-      .get(`${url}api/admin/gem/color/all`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => {setColor(res.data);
-        const color = res?.data?.map(d => d);
-        //console.log(color,"---------color-------")
-      }
-      );
-  };
+  // const getGemColor = () => {
+  //   axios
+  //     .get(`${url}api/admin/gem/color/all`, {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     })
+  //     .then((res) => {setColor(res.data);
+  //       const color = res?.data?.map(d => d);
+  //     }
+  //     );
+  // };
  
-
-
   const initialValues = {
     status: "",
     gemType: "",
@@ -331,8 +373,6 @@ function GemDetails() {
     notes: "",
   };
 
-  const token =
-    typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
 
   const handleMultipleImages = (evnt) => {
     const selectedFIles = [];
@@ -345,10 +385,7 @@ function GemDetails() {
   };
 
   const handleRemoveImage = (index) => {
-    console.log(index, "------------index");
     var spliced = images.splice(index - 1, index);
-    console.log(spliced, "============================spliced");
-    console.log(images, "-------------------------------images");
     // setImages(spliced);
   };
 
@@ -360,10 +397,7 @@ function GemDetails() {
     let selectedjewellerytypeValue = selectedjewellerytype.map((dt) => {
       return dt.value;
     });
-    console.log(
-      selectedjewellerytypeValue,
-      "-------------------selectedjewellerytype"
-    );
+  
 
     let bgColors = {
       color_1: firstColor,
@@ -452,7 +486,6 @@ function GemDetails() {
       details: images[0],
       notes: values.details_notes,
     };
-    console.log(data,"-------------data")
     const formData = new FormData();
     formData.append("status", "Active");
     formData.append("gemType", data.gemType);
@@ -467,10 +500,8 @@ function GemDetails() {
     formData.append("family", data.gemfamily);
     formData.append("variety", data.variety);
     formData.append("countryOfOrigin", data.countryOfOrigin);
-    // formData.append("color",'[  "Red",  "Black",  "Pink"]');
     formData.append("color", JSON.stringify(data.color));
     formData.append("lightEffect", data.lightEffect);
-    // formData.append("jewelleryType", '["Ring", "Earring"]');
     formData.append("jewelleryType", JSON.stringify(data.jewelleryType));
     formData.append("shape", data.shape);
     formData.append("dimensions", JSON.stringify(data.dimensions));
@@ -501,7 +532,6 @@ function GemDetails() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((result) => {
-        console.log(result, "----------------------result");
         showToaster("success", "GemsAdd Added Successfully");
       })
       .catch((err) => {
@@ -528,7 +558,7 @@ function GemDetails() {
                   <Form>
                     <Row>
                       <Col sm={router.query?.id ? 8 : 12}>
-                        <div className="cards">
+                        <div className="gemcards">
                         <h3 className="cards-header mb-3 mt-5 ">
                               Identification
                             </h3>
@@ -602,12 +632,11 @@ function GemDetails() {
                               </div>
                               <div className="row mt-3">
                                 {images.map((url, index) => {
-                                  console.log(url,"--------",index)
                                   return (
                                     <div className="col-sm-4 image-sec">
                                       <div className="bg-pink">
-                                        <img src={url[index]} className="img-fluid" />
-                                      </div>
+                                        <img src={`${url}`+ url?.images}  className="img-fluid" />
+                                    </div>
                                       <div className="border-cross-1">
                                         <FontAwesomeIcon
                                           className="icon-class pinkicon"
@@ -635,7 +664,6 @@ function GemDetails() {
                                 accept=".png, .jpg, .jpeg"
                                 name="cinemaGraph"
                                 onChange={changeHandler}
-                                
                               />
 
                               <div className="row mt-3">
@@ -741,45 +769,48 @@ function GemDetails() {
                             <div className="col-sm-8">
                               <div>
                                 <p className="label-text utext">Color 1</p>
-                                <div className="position-relative">
                                   <Field
-                                    type="color"
-                                    className="main-color-picker"
-                                    name="background"
-                                    value={firstColor}
-                                    onChange={(e) =>
+                                      type="text"
+                                      //placeholder="color code"
+                                      className="gcolorinputs"
+                                      name="background"
+                                      value={firstColor}
+                                      disabled
+                                    />  
+                                    <Field
+                                      type="color"
+                                      //placeholder="color code"
+                                      className="gcolorcodes"
+                                      name="background"                          
+                                      value={firstColor}
+                                      onChange={(e) =>
                                       setFirstColor(e.target.value)
-                                    }
-                                  />
-                                  <Field
-                                    type="text"
-                                    className="form-control"
-                                    name="background"
-                                    value={firstColor}
-                                    disabled
-                                  />
-                                </div>
+                                      }
+                                    />
                               </div>
-                              <div className="mt-3">
+                              <div className="mt-3 ">
                                 <p className="label-text utext">Color 2</p>
 
                                 <div className="position-relative">
-                                  <Field
-                                    type="color"
-                                    name="background"
-                                    className="main-color-picker"
-                                    value={secondColor}
+                                
+                                     <Field
+                                      type="text"
+                                      //placeholder="color code"
+                                      className="gcolorinputs"
+                                      name="background"
+                                      value={secondColor}
+                                      disabled
+                                    />  
+                                    <Field
+                                      type="color"
+                                      //placeholder="color code"
+                                      className="gcolorcodes"
+                                      name="background"                          
+                                      value={secondColor}
                                     onChange={(e) =>
                                       setSecondColor(e.target.value)
                                     }
-                                  />
-                                  <Field
-                                    type="text"
-                                    className="form-control"
-                                    name="background"
-                                    value={secondColor}
-                                    disabled
-                                  />
+                                    />
                                 </div>
                               </div>
                             </div>
@@ -815,6 +846,7 @@ function GemDetails() {
                                   name="unit"
                                   className="form-control utext"
                                 >
+                                  <option value="">Select</option>
                                   <option value="carat">carat</option>
                                   <option value="mm">mm</option>
                                   <option value="grams">grams</option>
@@ -831,6 +863,7 @@ function GemDetails() {
                               <Field
                                 name="littleStory"
                                 as="textarea"
+                                id="editor"
                                 className="form-textarea"
                                 rows={7}
                               />
@@ -916,10 +949,6 @@ function GemDetails() {
                                   onChange={setSelectedColor}
                                   labelledBy="Select color"
                                 />
-
-
-
-                                
                               </div>
                             </div>
                           </div>
@@ -1065,23 +1094,8 @@ function GemDetails() {
                                         setProportions(e.target.value)
                                       }
                                     >
-                                      <option value="">
-                                        Select
-                                      </option>
-                                      <option value="">Select</option>
-                                      <option value="ID">Ideal ID</option>
-                                      <option value="EX">
-                                        Excellent EX
-                                      </option>
-                                      <option value="VG">
-                                        Very Good VG
-                                      </option>
-                                      <option value="G">Good G</option>
-                                      <option value="FR">Fair FR</option>
-                                      <option value="PR">Poor PR</option>
-                                      <option value="UN">
-                                        Unusual UN
-                                      </option>
+                             <option value="">Select</option>
+ {CutTypeData.filter(fd=>fd.cutName==="Proportions")[0].inCatName.map((md,idx)=>(<option value={md}>{md}</option>))}
                                     </Field>
                                   </div>
                                 </div>
@@ -1098,20 +1112,9 @@ function GemDetails() {
                                         setSymmetric(e.target.value)
                                       }
                                     >
-                                     <option value="">Select</option>
-                                      <option value="ID">Ideal ID</option>
-                                      <option value="EX">
-                                        Excellent EX
-                                      </option>
-                                      <option value="VG">
-                                        Very Good VG
-                                      </option>
-                                      <option value="G">Good G</option>
-                                      <option value="FR">Fair FR</option>
-                                      <option value="PR">Poor PR</option>
-                                      <option value="UN">
-                                        Unusual UN
-                                      </option>
+                              <option value="">Select</option>
+{CutTypeData.filter(fd=>fd.cutName==="Symmetry")[0].inCatName.map((md,idx)=>(<option value={md}>{md}</option>))}
+
                                     </Field>
                                   </div>
                                 </div>
@@ -1128,20 +1131,9 @@ function GemDetails() {
                                         setPolish(e.target.value)
                                       }
                                     >
-                                      <option value="">Select</option>
-                                      <option value="ID">Ideal ID</option>
-                                      <option value="EX">
-                                        Excellent EX
-                                      </option>
-                                      <option value="VG">
-                                        Very Good VG
-                                      </option>
-                                      <option value="G">Good G</option>
-                                      <option value="FR">Fair FR</option>
-                                      <option value="PR">Poor PR</option>
-                                      <option value="UN">
-                                        Unusual UN
-                                      </option>
+                              <option value="">Select</option>
+  {CutTypeData.filter(fd=>fd.cutName==="Polish")[0].inCatName.map((md,idx)=>(<option value={md}>{md}</option>))}
+
                                     </Field>
                                   </div>
                                 </div>
@@ -1386,11 +1378,12 @@ function GemDetails() {
                                                   <td>
                                                     <div className="col-sm-6 tbfieldc">
                                                       <Field
-                                                        as="select"
+                                                       type="input"
                                                         name="type"
-                                                        className="form-control rounded "
+                                                        className="form-control rounded"
+                                                        readOnly
                                                       >
-                                                        <option value="">
+                                                        {/* <option value="">
                                                           Type
                                                         </option>
                                                         <option value="Designer">
@@ -1404,7 +1397,7 @@ function GemDetails() {
                                                         </option>
                                                         <option value="Artisian">
                                                           Artisian
-                                                        </option>
+                                                        </option> */}
                                                       </Field>
                                                       {errors.creators &&
                                                         errors.creators[
@@ -1433,7 +1426,7 @@ function GemDetails() {
                                                         remove(index)
                                                       }
                                                     >
-                                                      Remove
+                                                      &nbsp;&nbsp;Remove
                                                     </button>
                                                   </td>
                                                 </tr>
