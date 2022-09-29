@@ -11,7 +11,7 @@ import { wrapper, persistor } from '../redux/store';
 function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     if (!localStorage.getItem('accessToken')) {
-      Router.push(`/`);
+      Router.push(`/login`);
     }
   }, [])
 

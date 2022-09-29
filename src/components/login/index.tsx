@@ -12,7 +12,6 @@ import axios from "axios";
 import { url } from "components/ApiUrl/ApiUrl";
 import showToaster from 'components/_common/Toaster/Toaster';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'redux/store';
 import postLogin from 'redux/action/Login';
 import { AnyAction } from 'redux';
 
@@ -43,8 +42,6 @@ function Login() {
     .post(`${url}api/admin/sign-in`,logindata)
     .then((response) => {
        localStorage.setItem('accessToken',response.data.accessToken);
-      // showToaster("success","SignIn Successfully");
-      // Router.push(`/customers-list`);
       dispatch(postLogin(values) as unknown as AnyAction);
       Router.push(`/editable-values-list`)
      })

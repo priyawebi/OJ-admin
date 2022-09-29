@@ -1,7 +1,8 @@
 import axios from "axios";
 import { Dispatch } from "redux";
 import { url } from "../../../components/ApiUrl/ApiUrl";
-import { getJwelleryTypeData } from "redux/reducer/JwelleryType";
+import {getcutTypeData} from "redux/reducer/Cut"
+
 import {
   errorMessage,
   errorr,
@@ -11,12 +12,12 @@ import showToaster from "../../../components/_common/Toaster/Toaster";
 const token =
   typeof window !== "undefined" ? localStorage.getItem("accessToken") : "";
 
-export const getJwelleryTypes = (token) => (dispatch: Dispatch) => {
-  let jweldata = axios.get(`${url}api/admin/jewellerytype/all`, {
+export const getCutTypes = (token) => (dispatch: Dispatch) => {
+  let cutdata = axios.get(`${url}api/admin/gem/cut/all`, {
     headers: { Authorization: `Bearer ${token}` },
   })
   .then((res) => {
-    dispatch(getJwelleryTypeData(res.data))
+    dispatch(getcutTypeData(res.data))
   })
   .catch(() => {
     showToaster(errorr, errorMessage);

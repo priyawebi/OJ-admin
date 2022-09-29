@@ -554,7 +554,7 @@ button{
 }
 
 .tbfieldc{
-  width: 484px !important
+  width: 378px !important
 }
 
 .imgClass{
@@ -712,4 +712,28 @@ font-size: 14px!important;
 
 .border-cross {
 display: none;
+}
+
+.gemcards{
+  height:3500px !important;
+  box-shadow: 0px 5px 15px rgb(0 0 0 / 13%);
+  background-color: white;
+  padding: 20px;
+}
+
+.gcolorcodes{
+  appearance: auto;
+  width:30px;
+  height:18px;
+  cursor: default;
+  color: buttontext;
+  border-image: none;
+  overflow: hidden;
+  margin-left:-40px;
+}
+.gcolorinputs{
+  appearance: auto;
+  width:370px;
+  height:37px;
+  padding:2px;
 }
