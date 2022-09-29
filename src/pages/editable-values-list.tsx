@@ -1,0 +1,2 @@
+import editableValuesList from "components/editablevalue/editableValuesList";
+export default editableValuesList
